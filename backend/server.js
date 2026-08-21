@@ -20,8 +20,16 @@ const PORT = Number(process.env.PORT) || 3000;
 // (which allows the app to boot but will fail token verification until
 // real credentials are supplied).
 function initFirebaseAdmin() {
-  const projectId = process.env.FIREBASE_PROJECT_ID;
+  const projectId = process.env.FIREBASE_PROJECT_ID || "synapse-ai-fallback-id";
   const saJson = process.env.FIREBASE_SERVICE_ACCOUNT;
+
+  const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
+  let privateKey = process.env.FIREBASE_PRIVATE_KEY;
+
+  if (privateKey) {
+    // Handle escaped newlines from environment variables
+    privateKey = privateKey.replace(/\\n/g, "\n");
+  }
 
   try {
     if (saJson) {
@@ -32,6 +40,20 @@ function initFirebaseAdmin() {
       console.log("[firebase] Initialized with FIREBASE_SERVICE_ACCOUNT.");
       return;
     }
+
+    if (clientEmail && privateKey) {
+      admin.initializeApp({
+        credential: admin.credential.cert({
+          projectId: projectId,
+          clientEmail: clientEmail,
+          privateKey: privateKey,
+        }),
+        projectId,
+      });
+      console.log("[firebase] Initialized with FIREBASE_CLIENT_EMAIL and FIREBASE_PRIVATE_KEY.");
+      return;
+    }
+
     if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
       admin.initializeApp({ projectId });
       console.log("[firebase] Using application default credentials.");
