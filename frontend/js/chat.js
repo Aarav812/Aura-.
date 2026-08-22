@@ -2736,7 +2736,7 @@ function showModelWarning(originalModel) {
     <span class="material-symbols-outlined">info</span>
     <span>This chat was with <strong>${escapeHtml(originalModel)}</strong></span>
     <button type="button" class="model-warning-switch">Switch back</button>
-    <button type="button" class="model-warning-dismiss" style="background:none;border:none;color:rgba(255,200,100,0.5);padding:2px;cursor:pointer;"><span class="material-symbols-outlined" style="font-size:16px;">close</span></button>
+    <button type="button" class="model-warning-dismiss" aria-label="Dismiss warning" style="background:none;border:none;color:rgba(255,200,100,0.5);padding:2px;cursor:pointer;"><span class="material-symbols-outlined" style="font-size:16px;">close</span></button>
   `;
   const switchBtn = banner.querySelector('.model-warning-switch');
   if (switchBtn) switchBtn.addEventListener('click', () => {
@@ -2780,7 +2780,7 @@ function showPWAInstallBanner() {
       <div class="pwa-title">Install Synapse AI</div>
       <div class="pwa-desc">Add to home screen for quick access</div>
     </div>
-    <button class="pwa-close" onclick="event.stopPropagation(); this.closest('.pwa-install-banner').remove(); localStorage.setItem('pwa_dismissed','1');">
+    <button class="pwa-close" aria-label="Close install prompt" onclick="event.stopPropagation(); this.closest('.pwa-install-banner').remove(); localStorage.setItem('pwa_dismissed','1');">
       <span class="material-symbols-outlined" style="font-size:16px;">close</span>
     </button>
   `;
