@@ -1252,10 +1252,10 @@ if (navSearchInput) {
 // (#1) History Search
 const historySearchInput = document.getElementById('history-search-input');
 if (historySearchInput) {
-  historySearchInput.addEventListener('input', () => {
+  historySearchInput.addEventListener('input', debounce(() => {
     const query = historySearchInput.value.trim().toLowerCase();
     loadHistoryIndex(query);
-  });
+  }, 300));
 }
 
 
