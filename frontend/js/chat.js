@@ -2103,7 +2103,12 @@ function appendMessage(role, content, explicitIndex = -1, isRawHtmlForUser = fal
       }
       // Guard against undefined/null so we never render the literal "undefined"
       textToDisplay = textToDisplay ?? "";
-      bubble.innerHTML = isRawHtmlForUser ? textToDisplay : escapeHtml(textToDisplay);
+
+      let sanitizedHtml = isRawHtmlForUser ? textToDisplay : escapeHtml(textToDisplay);
+      if (isRawHtmlForUser && typeof DOMPurify !== "undefined") {
+        sanitizedHtml = DOMPurify.sanitize(sanitizedHtml, { ADD_ATTR: ["target"] });
+      }
+      bubble.innerHTML = sanitizedHtml;
     
     // Add Edit Button
     const editBtn = document.createElement("button");
