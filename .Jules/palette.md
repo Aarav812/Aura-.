@@ -1,1 +1,3 @@
-## 2026-08-22 - Adding ARIA Labels to Icon-only Buttons\n**Learning:** Missing aria-labels on icon-only buttons created accessibility issues for screen readers.\n**Action:** Add aria-label attributes to icon-only buttons to improve accessibility.
+## 2024-05-18 - Accessible Labels for Icon-Only Buttons and Inputs
+**Learning:** Icon-only buttons without text content and form inputs without proper `<label>` elements are inaccessible to screen reader users. Simply using `placeholder` on inputs or assuming icon meaning is visually obvious is not sufficient.
+**Action:** Always ensure icon-only buttons include `aria-label` and `title` attributes. Ensure all form inputs have associated `<label>` tags or `aria-label` attributes for screen readers.

@@ -432,15 +432,15 @@
         <!-- Auth Form -->
         <form id="auth-form" style="display: flex; flex-direction: column; gap: 0.85rem;">
           <div id="name-field" style="display: none;">
-            <input id="display-name" type="text" class="auth-input" placeholder="Your name" autocomplete="name" />
+            <input id="display-name" type="text" class="auth-input" placeholder="Your name" aria-label="Your name" autocomplete="name" />
           </div>
 
           <div>
-            <input id="email" type="email" class="auth-input" placeholder="Email address" required autocomplete="email" />
+            <input id="email" type="email" class="auth-input" placeholder="Email address" aria-label="Email address" required autocomplete="email" />
           </div>
 
           <div style="position: relative;">
-            <input id="password" type="password" class="auth-input" placeholder="Password" required minlength="6" autocomplete="current-password" style="padding-right: 3rem;" />
+            <input id="password" type="password" class="auth-input" placeholder="Password" aria-label="Password" required minlength="6" autocomplete="current-password" style="padding-right: 3rem;" />
             <button type="button" id="toggle-password" aria-label="Show password" style="position:absolute;right:1rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:rgba(226,226,233,0.5);padding:0;display:flex;align-items:center;">
               <span class="material-symbols-outlined" id="toggle-password-icon" aria-hidden="true" style="font-size:20px;">visibility</span>
             </button>
