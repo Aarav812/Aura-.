@@ -240,9 +240,9 @@ function renderMarkdown(text, isStreaming = false) {
       if (typeof katex !== "undefined") {
         return katex.renderToString(block.math, { displayMode: block.display, throwOnError: false, output: "html" });
       }
-      return block.display ? `<div class="math-fallback">${block.math}</div>` : `<span class="math-fallback">${block.math}</span>`;
+      return block.display ? `<div class="math-fallback">${escapeHtml(block.math)}</div>` : `<span class="math-fallback">${escapeHtml(block.math)}</span>`;
     } catch (e) {
-      return `<code class="math-error">${block.math}</code>`;
+      return `<code class="math-error">${escapeHtml(block.math)}</code>`;
     }
   });
 
