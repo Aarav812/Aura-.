@@ -2411,6 +2411,17 @@ document.addEventListener("DOMContentLoaded", () => {
     chatInput.classList.add('has-draft');
   }
 
+  // ⚡ Bolt: Debounced Draft Persistence
+  // Impact: Reduces main-thread blocking by batching synchronous localStorage I/O
+  // operations (setItem/removeItem) that previously fired on every keystroke.
+  const saveDraftDebounced = debounce((val, key) => {
+    if (val.trim()) {
+      localStorage.setItem(key, val);
+    } else {
+      localStorage.removeItem(key);
+    }
+  }, 500);
+
   if (chatInput) {
     const charCounter = document.getElementById('char-counter');
     chatInput.addEventListener('input', () => {
@@ -2437,11 +2448,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Handle draft persistence
+      saveDraftDebounced(val, draftKey);
       if (val.trim()) {
-        localStorage.setItem(draftKey, val);
         chatInput.classList.add('has-draft');
       } else {
-        localStorage.removeItem(draftKey);
         chatInput.classList.remove('has-draft');
       }
     });
