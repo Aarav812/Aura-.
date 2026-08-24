@@ -2,3 +2,7 @@
 **Vulnerability:** A Cross-Site Scripting (XSS) vulnerability was present in the `appendMessage` function of `frontend/js/chat.js` due to the direct assignment of raw, unescaped text to `bubble.innerHTML` when `isRawHtmlForUser` was true.
 **Learning:** Even internal formatting assumptions for variables intended as "raw HTML" shouldn't bypass basic security sanitation.
 **Prevention:** Always use `DOMPurify.sanitize()` (or a similar sanitization utility) on any dynamically generated content inserted into the DOM via `innerHTML`, even if the source is intended to be safe UI output.
+## $(date +%Y-%m-%d) - [XSS Fix: Sanitize KaTeX Fallback Output]
+**Vulnerability:** User inputs formatted as math blocks (e.g. `$$ <img src=x onerror=alert(1)> $$`) bypassed DOMPurify because they were temporarily replaced by safe placeholders during sanitization. When the placeholders were replaced back with the raw math content in the HTML, they were injected directly as innerHTML in fallbacks, enabling XSS if KaTeX didn't load or threw an error.
+**Learning:** Whenever a pre-processing step shields raw user inputs from a sanitizer (like DOMPurify), those inputs must be meticulously escaped manually before being re-injected into the DOM later.
+**Prevention:** Always wrap variables containing potentially untrusted user input with an HTML escaping function (like `escapeHtml()`) before injecting them into HTML strings that will be rendered dynamically in the DOM, especially when circumventing or operating outside the main sanitization pipeline.
