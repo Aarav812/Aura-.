@@ -4,3 +4,6 @@
 ## 2024-05-15 - Markdown Rendering Optimization
 **Learning:** The `renderMarkdown` function was creating a new `marked.Renderer` instance and re-defining its custom `code` override on every invocation. Since this function is called on every streamed token update, it caused unnecessary garbage collection overhead and object allocations.
 **Action:** Cache the instantiated `marked.Renderer` and `DOMPurify` configuration object globally to reuse them across all calls, reducing render time by ~30%.
+## 2026-08-24 - Chat Input Draft Saving Optimization
+**Learning:** Found the `chatInput` 'input' event listener handling draft persistence to `localStorage` on every single keystroke. `localStorage` is synchronous and doing I/O operations continuously during typing causes main thread blocking, leading to input latency (jank).
+**Action:** Extract the `localStorage` I/O operations into a debounced function using the `debounce` helper from `utils.js` (with a 500ms delay), but left the UI class updates immediate to maintain responsive feedback.
