@@ -1730,6 +1730,28 @@ async function getAuraResponse(multimodalState = {}) {
   let fullContent = "";
   let fullReasoning = "";
   let reasoningEl = null;
+  let pendingRAF = null;
+  let needsReasoningUpdate = false;
+  let needsContentUpdate = false;
+
+  const flushDOMUpdates = () => {
+    if (needsReasoningUpdate && reasoningEl) {
+      reasoningEl.querySelector(".thinking-content").innerHTML = renderMarkdown(fullReasoning);
+      needsReasoningUpdate = false;
+    }
+    if (needsContentUpdate) {
+      let contentContainer = bubbleEl.querySelector(".answer-content");
+      if (!contentContainer) {
+        contentContainer = document.createElement("div");
+        contentContainer.className = "answer-content";
+        bubbleEl.appendChild(contentContainer);
+      }
+      contentContainer.innerHTML = renderMarkdown(fullContent, true) + '<span class="typing-cursor"></span>';
+      setOrbState('responding');
+      needsContentUpdate = false;
+    }
+    scrollToBottom();
+  };
 
   try {
     const user = auth ? auth.currentUser : null;
@@ -1815,12 +1837,12 @@ async function getAuraResponse(multimodalState = {}) {
                 if (timerEl) timerEl.textContent = `${elapsed}s`;
               }, 1000);
             }
-            reasoningEl.querySelector(".thinking-content").innerHTML = renderMarkdown(fullReasoning);
-            scrollToBottom();
+            needsReasoningUpdate = true;
           }
 
           if (data.content) {
             fullContent += data.content;
+            needsContentUpdate = true;
 
             // ── Canvas Live Streaming ──
             // Detect HTML block start and mark streaming (no auto-open). Gated
@@ -1858,16 +1880,16 @@ async function getAuraResponse(multimodalState = {}) {
                 summary.innerHTML = `<span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;margin-right:4px;">psychology</span>Thought for ${elapsed}s`;
               }
             }
-            // Render content after the reasoning block
-            let contentContainer = bubbleEl.querySelector(".answer-content");
-            if (!contentContainer) {
-              contentContainer = document.createElement("div");
-              contentContainer.className = "answer-content";
-              bubbleEl.appendChild(contentContainer);
+          }
+
+          // Schedule a single DOM update for this chunk iteration if needed
+          if (needsReasoningUpdate || needsContentUpdate) {
+            if (!pendingRAF) {
+              pendingRAF = requestAnimationFrame(() => {
+                flushDOMUpdates();
+                pendingRAF = null;
+              });
             }
-            contentContainer.innerHTML = renderMarkdown(fullContent, true) + '<span class="typing-cursor"></span>';
-            setOrbState('responding');
-            scrollToBottom();
           }
         } catch (parseErr) {
           // Skip malformed chunks
@@ -1963,6 +1985,12 @@ async function getAuraResponse(multimodalState = {}) {
       setOrbState('error');
     }
   } finally {
+    if (pendingRAF) {
+      cancelAnimationFrame(pendingRAF);
+      pendingRAF = null;
+    }
+    // Flush any pending updates that were scheduled just before the stream ended
+    flushDOMUpdates();
     isStreaming = false;
     abortController = null;
     canvasIsStreaming = false;
