@@ -158,10 +158,13 @@ function renderMarkdown(text, isStreaming = false) {
   // scrub it here before anything downstream. The app's OWN trusted markup
   // (artifact cards with `previewCode`, code blocks with `copyCode`, KaTeX)
   // is spliced in *below* this line, so those onclick handlers are preserved.
-  // Guarded: if the DOMPurify CDN is blocked/offline we fall back to the prior
-  // behavior rather than dropping the message entirely.
+  // Guarded: if the DOMPurify CDN is blocked/offline we fail securely by
+  // falling back to strict text escaping rather than injecting unsafe HTML.
   if (typeof DOMPurify !== "undefined") {
     html = DOMPurify.sanitize(html, cachedDOMPurifyConfig);
+  } else {
+    console.error("[SECURITY] DOMPurify not loaded! Failing securely by escaping all HTML.");
+    html = escapeHtml(text).replace(/\n/g, "<br>");
   }
 
   html = html.replace(/%%WRITING_ARTIFACT%%/g, `
