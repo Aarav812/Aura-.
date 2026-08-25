@@ -7,3 +7,6 @@
 ## 2026-08-24 - Chat Input Draft Saving Optimization
 **Learning:** Found the `chatInput` 'input' event listener handling draft persistence to `localStorage` on every single keystroke. `localStorage` is synchronous and doing I/O operations continuously during typing causes main thread blocking, leading to input latency (jank).
 **Action:** Extract the `localStorage` I/O operations into a debounced function using the `debounce` helper from `utils.js` (with a 500ms delay), but left the UI class updates immediate to maintain responsive feedback.
+## 2024-05-16 - Streaming Response Layout Thrashing Optimization
+**Learning:** During AI streaming response, updating `innerHTML` and calling `scrollToBottom()` (which reads `document.documentElement.scrollHeight`) synchronously on every single received chunk caused severe layout thrashing and main-thread blocking.
+**Action:** Wrapped the DOM assignment (`innerHTML`) and scroll update logic within `requestAnimationFrame` (RAF), ensuring that both operations are batched and executed only once per display frame. Remembered to clean up `pendingRAF` on stream end/abort.
