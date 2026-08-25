@@ -2104,9 +2104,14 @@ function appendMessage(role, content, explicitIndex = -1, isRawHtmlForUser = fal
       // Guard against undefined/null so we never render the literal "undefined"
       textToDisplay = textToDisplay ?? "";
 
-      let sanitizedHtml = isRawHtmlForUser ? textToDisplay : escapeHtml(textToDisplay);
+      let sanitizedHtml;
       if (isRawHtmlForUser && typeof DOMPurify !== "undefined") {
-        sanitizedHtml = DOMPurify.sanitize(sanitizedHtml, { ADD_ATTR: ["target"] });
+        sanitizedHtml = DOMPurify.sanitize(textToDisplay, { ADD_ATTR: ["target"] });
+      } else {
+        if (isRawHtmlForUser) {
+          console.error("[SECURITY] DOMPurify not loaded! Failing securely by escaping user HTML.");
+        }
+        sanitizedHtml = escapeHtml(textToDisplay);
       }
       bubble.innerHTML = sanitizedHtml;
     
