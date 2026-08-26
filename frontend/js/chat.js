@@ -2020,6 +2020,7 @@ function appendActionBar(rowEl, content) {
   const copyBtn = document.createElement("button");
   copyBtn.className = "action-btn";
   copyBtn.title = "Copy response";
+  copyBtn.setAttribute("aria-label", "Copy response");
   copyBtn.innerHTML = '<span class="material-symbols-outlined">content_copy</span>';
   copyBtn.onclick = () => {
     navigator.clipboard.writeText(content).then(() => {
@@ -2036,6 +2037,7 @@ function appendActionBar(rowEl, content) {
   const thumbUpBtn = document.createElement("button");
   thumbUpBtn.className = "action-btn";
   thumbUpBtn.title = "Good response";
+  thumbUpBtn.setAttribute("aria-label", "Good response");
   thumbUpBtn.innerHTML = '<span class="material-symbols-outlined">thumb_up</span>';
   thumbUpBtn.onclick = () => {
     thumbUpBtn.style.color = "#5ea2ff";
@@ -2048,6 +2050,7 @@ function appendActionBar(rowEl, content) {
   const thumbDownBtn = document.createElement("button");
   thumbDownBtn.className = "action-btn";
   thumbDownBtn.title = "Bad response";
+  thumbDownBtn.setAttribute("aria-label", "Bad response");
   thumbDownBtn.innerHTML = '<span class="material-symbols-outlined">thumb_down</span>';
   thumbDownBtn.onclick = () => {
     thumbDownBtn.style.color = "#ffb4ab";
@@ -2060,6 +2063,7 @@ function appendActionBar(rowEl, content) {
   const retryBtn = document.createElement("button");
   retryBtn.className = "action-btn";
   retryBtn.title = "Retry response";
+  retryBtn.setAttribute("aria-label", "Retry response");
   retryBtn.innerHTML = '<span class="material-symbols-outlined">refresh</span>';
   retryBtn.onclick = () => {
     if (isStreaming) return;
@@ -2077,6 +2081,7 @@ function appendActionBar(rowEl, content) {
   const exportBtn = document.createElement("button");
   exportBtn.className = "action-btn";
   exportBtn.title = "Export as PDF";
+  exportBtn.setAttribute("aria-label", "Export as PDF");
   exportBtn.innerHTML = '<span class="material-symbols-outlined">picture_as_pdf</span>';
   exportBtn.onclick = () => exportCurrentChat();
 
