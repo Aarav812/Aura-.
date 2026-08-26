@@ -10,6 +10,7 @@ const OpenAI = require("openai");
 const admin = require("firebase-admin");
 
 const app = express();
+app.set('trust proxy', 1);
 // Render provides the port through its PORT environment variable. Keep 3000
 // as a convenient local-development fallback.
 const PORT = Number(process.env.PORT) || 3000;
