@@ -830,9 +830,10 @@ async function renderConversation(history) {
   if (heroSection) heroSection.style.display = "none";
   if (emptyState) emptyState.style.display = "none";
 
+  const fragment = document.createDocumentFragment();
   history.forEach((msg, idx) => {
     if (msg.role === "assistant") {
-      appendMessage("ai", msg.content || "", idx);
+      appendMessage("ai", msg.content || "", idx, false, true, fragment);
     } else {
       let htmlContent = "";
       if (typeof msg.content === "string") {
@@ -855,9 +856,12 @@ async function renderConversation(history) {
           htmlContent += `<br><div style="display:flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;">${previews.join("")}</div>`;
         }
       }
-      appendMessage("user", htmlContent, idx, true);
+      appendMessage("user", htmlContent, idx, true, true, fragment);
     }
   });
+  chatMessages.appendChild(fragment);
+  scrollToBottom(true);
+  updateScrollBtn();
 
   document.querySelectorAll(".lazy-db-img").forEach(async img => {
     if (img.dataset.dbId) {
@@ -2090,7 +2094,7 @@ function appendActionBar(rowEl, content) {
 }
 
 // ── Append Message to Chat ──
-function appendMessage(role, content, explicitIndex = -1, isRawHtmlForUser = false) {
+function appendMessage(role, content, explicitIndex = -1, isRawHtmlForUser = false, skipScroll = false, container = chatMessages) {
   // Use explicitIndex if provided (e.g. during loadSession), 
   // otherwise calculate based on current history length.
   const index = explicitIndex !== -1 ? explicitIndex : conversationHistory.length;
@@ -2184,10 +2188,12 @@ function appendMessage(role, content, explicitIndex = -1, isRawHtmlForUser = fal
   ts.textContent = new Date(tsMillis).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   row.appendChild(ts);
 
-  chatMessages.appendChild(row);
+  container.appendChild(row);
   // Force scroll for user messages; AI messages respect user's scroll position
-  scrollToBottom(role === "user");
-  updateScrollBtn();
+  if (!skipScroll) {
+    scrollToBottom(role === "user");
+    updateScrollBtn();
+  }
 
   return { rowEl: row, bubbleEl: bubble };
 }
