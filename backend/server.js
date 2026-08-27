@@ -84,6 +84,16 @@ const corsOptions = process.env.FRONTEND_ORIGIN
   ? { origin: process.env.FRONTEND_ORIGIN.split(",").map((o) => o.trim()) }
   : {};
 app.use(cors(corsOptions));
+
+// Security Headers Middleware
+app.use((req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("X-XSS-Protection", "1; mode=block");
+  res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+  next();
+});
+
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.use(express.static(path.join(__dirname, "../frontend"), { extensions: ["html"] }));
@@ -538,16 +548,17 @@ app.post("/api/chat", verifyFirebaseToken, rateLimit, async (req, res) => {
     let errorMsg = "Aura encountered an issue. Please try again.";
     if (hasImage) {
       // Log the REAL error so we can debug:
-      const realError = err?.error?.message || err?.message || util.inspect(err, { depth: 3 });
-      console.error(`[ERROR] Vision model failed. Model: ${targetModel} | Error: ${realError}`);
-      if (err.status === 404 || realError.includes("not found") || realError.includes("404")) {
+      const realErrorForLog = err?.error?.message || err?.message || util.inspect(err, { depth: 3 });
+      const realErrorForClient = err?.error?.message || err?.message || "An unexpected error occurred";
+      console.error(`[ERROR] Vision model failed. Model: ${targetModel} | Error: ${realErrorForLog}`);
+      if (err.status === 404 || realErrorForLog.includes("not found") || realErrorForLog.includes("404")) {
         errorMsg = "Vision model not available on this API account. Contact support.";
       } else if (err.status === 400) {
-        errorMsg = `Image rejected by API: ${realError}`;
+        errorMsg = `Image rejected by API: ${realErrorForClient}`;
       } else if (err.status === 401) {
         errorMsg = "Invalid Vision API Key.";
       } else {
-        errorMsg = `Image analysis failed: ${realError}`;
+        errorMsg = `Image analysis failed: ${realErrorForClient}`;
       }
     } else if (err.status === 429) {
       errorMsg = "Rate limit exceeded. Please wait a moment.";
