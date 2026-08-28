@@ -4,3 +4,6 @@
 ## 2024-05-18 - Missing ARIA Labels on Dynamically Created Icon Buttons
 **Learning:** Icon-only action buttons dynamically created via JS (e.g., in `frontend/js/chat.js` for the AI response action bar) often lack `aria-label` attributes, making them inaccessible to screen readers.
 **Action:** Always ensure that dynamically created DOM elements, especially icon-only buttons, have an `aria-label` attribute explicitly set (e.g., `button.setAttribute('aria-label', 'Description')`) alongside any `title` attribute.
+## 2024-05-18 - Missing ARIA Labels on History Search Input and Edit Message Textarea
+**Learning:** Some elements dynamically added or styled specifically (like `<textarea>` inside an edit mode for an individual message or `<input>` inside a `<label>` missing text) do not naturally contain enough contextual text for screen readers. In `chat.html`, `chat-tail.html` and `chat.js`, these inputs lacked accessibility labels.
+**Action:** When working on input and textareas, ensure they have associated `aria-label` attributes if there is no immediate text `<label>` explaining their function, making the UI accessible via keyboard navigation and screen readers.
