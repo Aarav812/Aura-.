@@ -66,6 +66,15 @@ function debounce(func, wait) {
 let cachedMarkedRenderer = null;
 let cachedDOMPurifyConfig = { ADD_ATTR: ["target"] };
 
+// Hook to prevent reverse tabnabbing by adding rel="noopener noreferrer" when target is used
+if (typeof DOMPurify !== "undefined") {
+  DOMPurify.addHook('afterSanitizeAttributes', function (node) {
+    if ('target' in node && node.hasAttribute('target')) {
+      node.setAttribute('rel', 'noopener noreferrer');
+    }
+  });
+}
+
 /**
  * Robust markdown parsing using marked.
  */
