@@ -2157,6 +2157,7 @@ function appendMessage(role, content, explicitIndex = -1, isRawHtmlForUser = fal
     editBtn.className = "edit-message-btn";
     editBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px;">edit</span>';
     editBtn.title = "Edit message";
+    editBtn.setAttribute("aria-label", "Edit message");
     editBtn.onclick = () => openEditMode(row, index);
     row.appendChild(editBtn);
   } else {
@@ -2352,7 +2353,7 @@ function openEditMode(rowEl, index) {
 
   // Build edit UI safely to prevent XSS from user content
   bubble.innerHTML = `
-    <textarea class="edit-textarea"></textarea>
+    <textarea class="edit-textarea" aria-label="Edit your message"></textarea>
     <div class="edit-actions">
       <button class="edit-btn cancel">Cancel</button>
       <button class="edit-btn save">Save & Resubmit</button>
