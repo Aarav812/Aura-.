@@ -22,3 +22,7 @@
 **Vulnerability:** The application uses DOMPurify to sanitize HTML output but explicitly allows the `target` attribute via `{ ADD_ATTR: ["target"] }`. This configuration exposes the application to Reverse Tabnabbing attacks where a newly opened tab can manipulate the original application page using the `window.opener` object.
 **Learning:** Allowing user-supplied `target` attributes in sanitized HTML without also enforcing `rel="noopener noreferrer"` can lead to security vulnerabilities, specifically reverse tabnabbing.
 **Prevention:** Added a global `DOMPurify.addHook('afterSanitizeAttributes', ...)` to automatically append the `rel="noopener noreferrer"` attribute to any element that contains a `target` attribute to prevent reverse tabnabbing.
+## 2026-08-29 - [XSS Fix: Sanitize Inline Image Attributes]
+**Vulnerability:** In `frontend/js/chat.js` during conversation rendering, `<img>` tags for attachments were constructed using template literals where `src` and data attributes (`data-db-id`) were injected without escaping. A malicious URL could break out of the quotes and inject arbitrary attributes like `onerror=alert(1)`.
+**Learning:** Even if a URL seems structurally safe (like coming from an internal DB reference), any dynamically constructed HTML string must have its variables escaped.
+**Prevention:** Always use `escapeHtml()` when interpolating variables into HTML attributes inside template strings.

@@ -848,8 +848,8 @@ async function renderConversation(history) {
         for (const block of msg.content) {
           if (block.type === "image_url") {
             const src = block.image_url.url.startsWith("db:") ? "#" : block.image_url.url;
-            const dbAttr = block.image_url.url.startsWith("db:") ? `data-db-id="${block.image_url.url.split("db:")[1]}"` : "";
-            previews.push(`<img src="${src}" ${dbAttr} class="lazy-db-img" style="max-height: 200px; border-radius: 8px; margin-top: 8px; border: 1px solid rgba(255,255,255,0.1);"/>`);
+            const dbAttr = block.image_url.url.startsWith("db:") ? `data-db-id="${escapeHtml(block.image_url.url.split("db:")[1])}"` : "";
+            previews.push(`<img src="${escapeHtml(src)}" ${dbAttr} class="lazy-db-img" style="max-height: 200px; border-radius: 8px; margin-top: 8px; border: 1px solid rgba(255,255,255,0.1);"/>`);
           }
         }
         if (previews.length > 0) {
