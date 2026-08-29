@@ -7,3 +7,6 @@
 ## 2024-05-18 - Missing ARIA Labels on History Search Input and Edit Message Textarea
 **Learning:** Some elements dynamically added or styled specifically (like `<textarea>` inside an edit mode for an individual message or `<input>` inside a `<label>` missing text) do not naturally contain enough contextual text for screen readers. In `chat.html`, `chat-tail.html` and `chat.js`, these inputs lacked accessibility labels.
 **Action:** When working on input and textareas, ensure they have associated `aria-label` attributes if there is no immediate text `<label>` explaining their function, making the UI accessible via keyboard navigation and screen readers.
+## 2024-08-29 - [Missing `alt` attributes on dynamically rendered chat images]
+**Learning:** Dynamically generating image tags using string interpolation makes it easy to accidentally omit accessibility attributes like `alt` text, leading to poor screen reader experiences for attached media.
+**Action:** When manually building HTML strings with template literals for image previews, always include an `alt` attribute (e.g., `alt="Attached image"` or passing a filename) to ensure accessibility.
