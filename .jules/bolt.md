@@ -14,3 +14,6 @@
 ## 2024-05-17 - Chat History Rendering Optimization
 **Learning:** During chat history rendering, calling `scrollToBottom` and `updateScrollBtn` synchronously after appending each message caused severe layout thrashing (O(N) layout recalculations).
 **Action:** Passed `skipScroll` and `container` arguments to `appendMessage` to batch DOM appends into a `DocumentFragment` and skip scroll updates until the entire history is rendered.
+## $(date +%Y-%m-%d) - DOM Batching in History Loading
+**Learning:** Found history lists being rendered by appending elements one-by-one directly to `historyListContainer` in a loop, causing O(N) layout recalculations.
+**Action:** Use a `DocumentFragment` to build the list in memory and append the fragment in one operation to batch DOM updates.

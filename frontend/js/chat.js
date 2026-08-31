@@ -1307,13 +1307,18 @@ function loadHistoryIndex(searchQuery = '') {
     groups[bucketToLabel[getHistoryDayBucket(chat.updatedAt, nowMs)]].push(chat);
   });
 
+  // ⚡ Bolt: Batch DOM Appends with DocumentFragment
+  // Impact: O(N) -> O(1) layout recalculations. Appending directly to historyListContainer
+  // inside the loop causes layout thrashing for users with large histories.
+  const fragment = document.createDocumentFragment();
+
   Object.entries(groups).forEach(([label, chats]) => {
     if (chats.length === 0) return;
 
     const groupLabel = document.createElement('p');
     groupLabel.className = 'history-modal-group-label';
     groupLabel.textContent = label;
-    historyListContainer.appendChild(groupLabel);
+    fragment.appendChild(groupLabel);
 
     chats.forEach(chat => {
       const item = document.createElement("div");
@@ -1328,9 +1333,11 @@ function loadHistoryIndex(searchQuery = '') {
           <span class="material-symbols-outlined" style="font-size: 18px;">delete</span>
         </button>
       `;
-      historyListContainer.appendChild(item);
+      fragment.appendChild(item);
     });
   });
+
+  historyListContainer.appendChild(fragment);
 }
 
 // ── Send Message ──
