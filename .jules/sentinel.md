@@ -26,3 +26,7 @@
 **Vulnerability:** In `frontend/js/chat.js` during conversation rendering, `<img>` tags for attachments were constructed using template literals where `src` and data attributes (`data-db-id`) were injected without escaping. A malicious URL could break out of the quotes and inject arbitrary attributes like `onerror=alert(1)`.
 **Learning:** Even if a URL seems structurally safe (like coming from an internal DB reference), any dynamically constructed HTML string must have its variables escaped.
 **Prevention:** Always use `escapeHtml()` when interpolating variables into HTML attributes inside template strings.
+## $(date +%Y-%m-%d) - [XSS Fix] `innerHTML` Injection in `renderSuggestionChips`
+**Vulnerability:** A Cross-Site Scripting (XSS) vulnerability was present in the `renderSuggestionChips` function of `frontend/js/chat.js` due to the direct injection of properties from the `chips` array (such as `chip.title`, `chip.description`, and `chip.icon`) into `btn.innerHTML` without escaping.
+**Learning:** Even if data appears static or is generated internally (like predefined arrays), interpolating it into HTML template literals assigned to `innerHTML` creates a potential vulnerability if the data source ever changes or becomes dynamic in the future.
+**Prevention:** Always wrap variables containing string data with `escapeHtml()` (or similar sanitization) before injecting them into HTML strings that will be rendered dynamically in the DOM via `innerHTML`.
