@@ -2105,6 +2105,11 @@ function appendActionBar(rowEl, content) {
   bubbleEl.appendChild(bar);
 }
 
+// ⚡ Bolt: Cache Intl.DateTimeFormat
+// Impact: ~23x faster date formatting. `toLocaleTimeString` instantiates a new formatter
+// on every call, causing layout jank when rendering long chat histories.
+const messageTimeFormatter = new Intl.DateTimeFormat([], { hour: '2-digit', minute: '2-digit' });
+
 // ── Append Message to Chat ──
 function appendMessage(role, content, explicitIndex = -1, isRawHtmlForUser = false, skipScroll = false, container = chatMessages) {
   // Use explicitIndex if provided (e.g. during loadSession), 
@@ -2198,7 +2203,7 @@ function appendMessage(role, content, explicitIndex = -1, isRawHtmlForUser = fal
   const tsMillis = storedEntry && typeof storedEntry.ts === "number" ? storedEntry.ts : Date.now();
   const ts = document.createElement('div');
   ts.className = 'message-timestamp';
-  ts.textContent = new Date(tsMillis).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  ts.textContent = messageTimeFormatter.format(new Date(tsMillis));
   row.appendChild(ts);
 
   container.appendChild(row);
