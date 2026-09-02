@@ -694,8 +694,10 @@ function updateActiveModelIndicator(activeModelName) {
     const name = option.getAttribute('data-name');
     if (name === activeModelName) {
       option.classList.add('active');
+      option.setAttribute('aria-selected', 'true');
     } else {
       option.classList.remove('active');
+      option.setAttribute('aria-selected', 'false');
     }
   });
 }
