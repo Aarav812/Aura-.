@@ -21,3 +21,7 @@
 ## 2024-05-18 - Intl.DateTimeFormat Instantiation Bottleneck
 **Learning:** `Date.prototype.toLocaleDateString` and `toLocaleTimeString` are surprisingly slow (taking ~2s per 10k calls) because they implicitly instantiate a new `Intl.DateTimeFormat` object on every invocation. When used in loops (like rendering message timestamps or parsing chat history), this causes severe layout jank.
 **Action:** Always pre-instantiate and cache `Intl.DateTimeFormat` objects and use their `.format(date)` method instead. This simple swap yielded a ~22x speedup in date formatting operations.
+
+## 2024-05-18 - [Date calculation in history rendering]
+**Learning:** Instantiating `new Date()` inside a loop over a potentially large array (like rendering chat history buckets) can cause significant layout thrashing and CPU spikes due to repetitive Date creation and boundary calculations (e.g., `setHours(0,0,0,0)`).
+**Action:** Always pre-calculate loop-invariant dates (like the "start of today" timestamp) before the loop and pass the primitive `timestamp` to the helper function.
