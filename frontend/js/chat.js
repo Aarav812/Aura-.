@@ -1193,10 +1193,9 @@ if (historySearchInput) {
 // NOT a rolling 24h/48h window — a chat from 11pm yesterday reads as "Yesterday"
 // at 9am today, which is what users expect. Returns:
 // 'today' | 'yesterday' | 'previous7' | 'older'.
-function getHistoryDayBucket(timestamp, nowMs = Date.now()) {
-  const startOfToday = new Date(nowMs);
-  startOfToday.setHours(0, 0, 0, 0);
-  const todayMs = startOfToday.getTime();
+// ⚡ Bolt: Pass pre-calculated todayMs to prevent instantiating new Date objects
+// for every item in the history list (O(n) -> O(1) date creations).
+function getHistoryDayBucket(timestamp, todayMs) {
   const dayMs = 86400000;
   const t = timestamp || 0;
   if (t >= todayMs) return 'today';
@@ -1217,9 +1216,12 @@ function renderSidebarHistory(index) {
   Object.values(lists).forEach((list) => { if (list) list.innerHTML = ''; });
 
   const nowMs = Date.now();
+  const startOfToday = new Date(nowMs);
+  startOfToday.setHours(0, 0, 0, 0);
+  const todayMs = startOfToday.getTime();
   const buckets = { recent: [], yesterday: [], previous7: [] };
   index.forEach((chat) => {
-    switch (getHistoryDayBucket(chat.updatedAt, nowMs)) {
+    switch (getHistoryDayBucket(chat.updatedAt, todayMs)) {
       case 'today': buckets.recent.push(chat); break;
       case 'yesterday': buckets.yesterday.push(chat); break;
       case 'previous7': buckets.previous7.push(chat); break;
@@ -1233,6 +1235,11 @@ function renderSidebarHistory(index) {
   Object.entries(buckets).forEach(([key, chats]) => {
     const list = lists[key];
     if (!list) return;
+
+    // ⚡ Bolt: Batch DOM Appends with DocumentFragment
+    // Impact: O(N) -> O(1) layout recalculations. Appending directly to list
+    // inside the loop causes layout thrashing for users with large histories.
+    const fragment = document.createDocumentFragment();
     const visible = chats.slice(0, caps[key]);
     visible.forEach((chat) => {
       const item = document.createElement('li');
@@ -1266,8 +1273,9 @@ function renderSidebarHistory(index) {
 
       item.appendChild(button);
       item.appendChild(del);
-      list.appendChild(item);
+      fragment.appendChild(item);
     });
+    list.appendChild(fragment);
     // "Recent" always stays visible (it owns the empty-state copy); the dated
     // groups only appear once they actually hold a conversation.
     const group = list.closest('.history-group');
@@ -1295,6 +1303,9 @@ function loadHistoryIndex(searchQuery = '') {
 
   // Group by time periods
   const nowMs = Date.now();
+  const startOfToday = new Date(nowMs);
+  startOfToday.setHours(0, 0, 0, 0);
+  const todayMs = startOfToday.getTime();
   const groups = {
     'Today': [],
     'Yesterday': [],
@@ -1304,7 +1315,7 @@ function loadHistoryIndex(searchQuery = '') {
 
   const bucketToLabel = { today: 'Today', yesterday: 'Yesterday', previous7: 'Last 7 Days', older: 'Older' };
   index.forEach(chat => {
-    groups[bucketToLabel[getHistoryDayBucket(chat.updatedAt, nowMs)]].push(chat);
+    groups[bucketToLabel[getHistoryDayBucket(chat.updatedAt, todayMs)]].push(chat);
   });
 
   // ⚡ Bolt: Batch DOM Appends with DocumentFragment
@@ -2639,10 +2650,15 @@ function exportCurrentChat() {
   const index = getHistoryIndex();
   const entry = index.find(c => c.id === currentChatId);
   const chatTitle = entry?.title || 'Chat Export';
-  const exportDate = new Date().toLocaleDateString('en-US', {
-    year: 'numeric', month: 'long', day: 'numeric',
-    hour: '2-digit', minute: '2-digit'
-  });
+  if (!window._pdfExportDateFormatter) {
+    window._pdfExportDateFormatter = new Intl.DateTimeFormat('en-US', {
+      year: 'numeric', month: 'long', day: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+  }
+  // ⚡ Bolt: Cache Intl.DateTimeFormat for PDF export
+  // Impact: Prevents instantiating a new formatter on every export.
+  const exportDate = window._pdfExportDateFormatter.format(new Date());
 
   // Build message HTML
   let messagesHtml = '';
