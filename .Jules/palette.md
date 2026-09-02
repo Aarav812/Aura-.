@@ -10,3 +10,6 @@
 ## 2024-08-29 - [Missing `alt` attributes on dynamically rendered chat images]
 **Learning:** Dynamically generating image tags using string interpolation makes it easy to accidentally omit accessibility attributes like `alt` text, leading to poor screen reader experiences for attached media.
 **Action:** When manually building HTML strings with template literals for image previews, always include an `alt` attribute (e.g., `alt="Attached image"` or passing a filename) to ensure accessibility.
+## 2024-09-02 - Listbox Role Accessibility Requirements
+**Learning:** Elements using `role="listbox"` require active management of the `aria-selected` state on their child `role="option"` elements. Relying solely on visual cues like `.active` classes or injected icons leaves screen reader users unaware of which option is currently selected.
+**Action:** Always ensure that custom dropdowns or selectors using `role="listbox"` explicitly toggle the `aria-selected="true"` or `aria-selected="false"` attributes on the `role="option"` elements when selection changes.
