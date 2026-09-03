@@ -134,11 +134,15 @@ function updateAura1ToggleUI() {
     aura1ModeToggle.style.display = "flex";
     if (aura1Mode === "deep_think") {
       modeDeepThinkBtn.dataset.active = "true";
+      modeDeepThinkBtn.setAttribute("aria-pressed", "true");
       modeFastBtn.removeAttribute("data-active");
+      modeFastBtn.setAttribute("aria-pressed", "false");
       currentModel = "minimax/minimax-m2.7";
     } else {
       modeFastBtn.dataset.active = "true";
+      modeFastBtn.setAttribute("aria-pressed", "true");
       modeDeepThinkBtn.removeAttribute("data-active");
+      modeDeepThinkBtn.setAttribute("aria-pressed", "false");
       // Backend maps laguna-xs-2.1 → openai/gpt-oss-120b for the fast path.
       currentModel = "laguna-xs-2.1";
     }
