@@ -1776,6 +1776,29 @@ async function getAuraResponse(multimodalState = {}) {
       }
       contentContainer.innerHTML = renderMarkdown(fullContent, true) + '<span class="typing-cursor"></span>';
       setOrbState('responding');
+
+      // ── Canvas Live Streaming ──
+      // Detect HTML block start and mark streaming (no auto-open). Gated
+      // on the model's `canvas` capability (flagship + Aura Coder), not a
+      // single hard-coded name — live canvas is advertised for Aura Coder.
+      if (MODEL_CAPABILITIES[currentModelName]?.canvas) {
+        const htmlBlockMatch = fullContent.match(/```html\n?([\s\S]*)/);
+        if (htmlBlockMatch) {
+          // Extract code captured so far (before closing ```)
+          const codeMatch = fullContent.match(/```html\n?([\s\S]*?)(?:```|$)/);
+          const liveCode = codeMatch ? codeMatch[1] : htmlBlockMatch[1];
+
+          if (!canvasIsStreaming) {
+            // First detection — mark streaming but don't open yet
+            canvasIsStreaming = true;
+          }
+          // Push live update (debounced inside updateCanvasLive)
+          if (liveCode.length > 80) {
+            updateCanvasLive(liveCode);
+          }
+        }
+      }
+
       needsContentUpdate = false;
     }
     scrollToBottom();
@@ -1871,28 +1894,6 @@ async function getAuraResponse(multimodalState = {}) {
           if (data.content) {
             fullContent += data.content;
             needsContentUpdate = true;
-
-            // ── Canvas Live Streaming ──
-            // Detect HTML block start and mark streaming (no auto-open). Gated
-            // on the model's `canvas` capability (flagship + Aura Coder), not a
-            // single hard-coded name — live canvas is advertised for Aura Coder.
-            if (MODEL_CAPABILITIES[currentModelName]?.canvas) {
-              const htmlBlockMatch = fullContent.match(/```html\n?([\s\S]*)/);
-              if (htmlBlockMatch) {
-                // Extract code captured so far (before closing ```)
-                const codeMatch = fullContent.match(/```html\n?([\s\S]*?)(?:```|$)/);
-                const liveCode = codeMatch ? codeMatch[1] : htmlBlockMatch[1];
-
-                if (!canvasIsStreaming) {
-                  // First detection — mark streaming but don't open yet
-                  canvasIsStreaming = true;
-                }
-                // Push live update (debounced inside updateCanvasLive)
-                if (liveCode.length > 80) {
-                  updateCanvasLive(liveCode);
-                }
-              }
-            }
 
             // When content starts, stop the reasoning progress bar but keep block OPEN
             if (reasoningEl) {

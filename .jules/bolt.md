@@ -14,7 +14,7 @@
 ## 2024-05-17 - Chat History Rendering Optimization
 **Learning:** During chat history rendering, calling `scrollToBottom` and `updateScrollBtn` synchronously after appending each message caused severe layout thrashing (O(N) layout recalculations).
 **Action:** Passed `skipScroll` and `container` arguments to `appendMessage` to batch DOM appends into a `DocumentFragment` and skip scroll updates until the entire history is rendered.
-## $(date +%Y-%m-%d) - DOM Batching in History Loading
+## 2024-10-25 - DOM Batching in History Loading
 **Learning:** Found history lists being rendered by appending elements one-by-one directly to `historyListContainer` in a loop, causing O(N) layout recalculations.
 **Action:** Use a `DocumentFragment` to build the list in memory and append the fragment in one operation to batch DOM updates.
 
@@ -25,3 +25,6 @@
 ## 2024-05-18 - [Date calculation in history rendering]
 **Learning:** Instantiating `new Date()` inside a loop over a potentially large array (like rendering chat history buckets) can cause significant layout thrashing and CPU spikes due to repetitive Date creation and boundary calculations (e.g., `setHours(0,0,0,0)`).
 **Action:** Always pre-calculate loop-invariant dates (like the "start of today" timestamp) before the loop and pass the primitive `timestamp` to the helper function.
+## 2024-10-25 - Streaming Regex Parsing Optimization
+**Learning:** Checking for HTML blocks inside the AI SSE streaming chunk loop (e.g. `fullContent.match(/```html\n?([\s\S]*)/)`) forces the JS engine to scan the entire string over and over asynchronously up to a thousand times per request, stalling the main thread and janking animations. Furthermore, calling synchronous layout-reading DOM API like updating Canvas live preview within the inner loop led to layout thrashing.
+**Action:** Move all expensive regex parsing (like extracting live code snippets) and the DOM API calls mapping the extraction out of the chunk stream loop. Batch them into `requestAnimationFrame` (RAF) via `flushDOMUpdates()` so the CPU-heavy tasks and DOM layouts happen at most 60 times a second.
