@@ -1798,3 +1798,7 @@ async function getAuraResponse(multimodalState = {}) {
     typingEl.remove();
 
     ({ bubbleEl } = appendMessage("ai", ""));
+  } catch (err) {
+    console.error(err);
+  }
+}
