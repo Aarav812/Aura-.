@@ -62,20 +62,20 @@
           <div><p id="canvas-title" class="canvas-title">Canvas</p><p id="canvas-subtitle" class="canvas-subtitle">Writing code…</p></div>
         </div>
         <div class="canvas-header-right">
-          <div class="canvas-tab-bar">
-            <button id="canvas-tab-preview" class="canvas-tab active" type="button" onclick="switchCanvasTab('preview')"><span class="material-symbols-outlined" style="font-size:15px">play_circle</span>Preview</button>
-            <button id="canvas-tab-code" class="canvas-tab" type="button" onclick="switchCanvasTab('code')"><span class="material-symbols-outlined" style="font-size:15px">code</span>Code</button>
+          <div class="canvas-tab-bar" role="tablist" aria-label="Canvas views">
+            <button id="canvas-tab-preview" class="canvas-tab active" type="button" role="tab" aria-selected="true" aria-controls="canvas-preview-tab" onclick="switchCanvasTab('preview')"><span class="material-symbols-outlined" style="font-size:15px">play_circle</span>Preview</button>
+            <button id="canvas-tab-code" class="canvas-tab" type="button" role="tab" aria-selected="false" aria-controls="canvas-code-tab" onclick="switchCanvasTab('code')"><span class="material-symbols-outlined" style="font-size:15px">code</span>Code</button>
           </div>
           <button id="canvas-download-btn" class="canvas-action-btn" type="button" title="Download HTML" aria-label="Download HTML"><span class="material-symbols-outlined" style="font-size:18px">download</span></button>
           <button id="canvas-close-btn" class="canvas-action-btn" type="button" title="Close canvas" aria-label="Close canvas" onclick="closeCodePreview()"><span class="material-symbols-outlined" style="font-size:18px">close</span></button>
         </div>
       </header>
       <div class="canvas-body">
-        <div id="canvas-preview-tab" class="canvas-tab-content active">
+        <div id="canvas-preview-tab" class="canvas-tab-content active" role="tabpanel" aria-labelledby="canvas-tab-preview">
           <div id="canvas-live-indicator" class="canvas-live-badge hidden"><span class="canvas-live-dot"></span>Live</div>
           <iframe id="code-preview-iframe" class="canvas-iframe" sandbox="allow-scripts allow-modals allow-same-origin" title="Code preview" srcdoc="<html><body style='margin:0;background:#111;color:#eee;font-family:system-ui;display:grid;min-height:100vh;place-items:center'><p>Aura is preparing a preview…</p></body></html>"></iframe>
         </div>
-        <div id="canvas-code-tab" class="canvas-tab-content hidden"><pre id="canvas-code-view" class="canvas-code-pre"><code id="canvas-code-content" class="language-html"></code></pre></div>
+        <div id="canvas-code-tab" class="canvas-tab-content hidden" role="tabpanel" aria-labelledby="canvas-tab-code"><pre id="canvas-code-view" class="canvas-code-pre"><code id="canvas-code-content" class="language-html"></code></pre></div>
       </div>
     </aside>
     <div id="canvas-backdrop" class="canvas-backdrop hidden" onclick="closeCodePreview()"></div>

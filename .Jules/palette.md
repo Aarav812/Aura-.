@@ -13,3 +13,6 @@
 ## 2024-09-02 - Listbox Role Accessibility Requirements
 **Learning:** Elements using `role="listbox"` require active management of the `aria-selected` state on their child `role="option"` elements. Relying solely on visual cues like `.active` classes or injected icons leaves screen reader users unaware of which option is currently selected.
 **Action:** Always ensure that custom dropdowns or selectors using `role="listbox"` explicitly toggle the `aria-selected="true"` or `aria-selected="false"` attributes on the `role="option"` elements when selection changes.
+## 2025-01-20 - Custom Tab Interfaces Accessibility
+**Learning:** Custom tab interfaces (like the Canvas Preview/Code tabs) created with `<div>` and `<button>` elements are not announced as tabs by screen readers unless explicitly marked up. Relying on `.active` classes leaves screen reader users without context of the tabbed structure.
+**Action:** Always implement the `tablist`, `tab`, and `tabpanel` roles for custom tabbed interfaces, and ensure `aria-selected` is dynamically toggled to reflect the active tab.

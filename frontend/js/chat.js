@@ -3192,6 +3192,8 @@ window.switchCanvasTab = function(tab) {
     codeTab?.classList.remove("active");
     previewBtn?.classList.add("active");
     codeBtn?.classList.remove("active");
+    previewBtn?.setAttribute("aria-selected", "true");
+    codeBtn?.setAttribute("aria-selected", "false");
   } else {
     codeTab?.classList.remove("hidden");
     codeTab?.classList.add("active");
@@ -3199,6 +3201,8 @@ window.switchCanvasTab = function(tab) {
     previewTab?.classList.remove("active");
     codeBtn?.classList.add("active");
     previewBtn?.classList.remove("active");
+    codeBtn?.setAttribute("aria-selected", "true");
+    previewBtn?.setAttribute("aria-selected", "false");
   }
 };
 
