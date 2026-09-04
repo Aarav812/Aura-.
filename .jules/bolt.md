@@ -28,3 +28,6 @@
 ## 2024-10-25 - Streaming Regex Parsing Optimization
 **Learning:** Checking for HTML blocks inside the AI SSE streaming chunk loop (e.g. `fullContent.match(/```html\n?([\s\S]*)/)`) forces the JS engine to scan the entire string over and over asynchronously up to a thousand times per request, stalling the main thread and janking animations. Furthermore, calling synchronous layout-reading DOM API like updating Canvas live preview within the inner loop led to layout thrashing.
 **Action:** Move all expensive regex parsing (like extracting live code snippets) and the DOM API calls mapping the extraction out of the chunk stream loop. Batch them into `requestAnimationFrame` (RAF) via `flushDOMUpdates()` so the CPU-heavy tasks and DOM layouts happen at most 60 times a second.
+## 2024-10-25 - DOM Traversal Optimization in Event Listeners
+**Learning:** Performing synchronous DOM traversals (like `document.querySelector`) inside high-frequency event listeners (like `input` or `scroll`) causes unnecessary repeated CPU overhead. This creates input latency and can lead to jank.
+**Action:** Always hoist DOM queries outside of the event listener to cache the element references, turning O(N) traversal into an O(1) lookup.

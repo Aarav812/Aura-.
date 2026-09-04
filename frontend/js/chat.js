@@ -2499,6 +2499,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (chatInput) {
     const charCounter = document.getElementById('char-counter');
+    // ⚡ Bolt: Cache DOM elements
+    // Impact: Avoids O(N) DOM traversals on every keystroke in the input event handler.
+    const charLimitArcSvg = document.querySelector('.char-limit-arc');
+    const charLimitArc = document.querySelector('.char-limit-arc .arc-value');
+
     chatInput.addEventListener('input', () => {
       const val = chatInput.value;
       
@@ -2508,8 +2513,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (val.length >= 4000) charCounter.style.color = '#ffb4ab';
         else charCounter.style.color = '';
       }
-      const charLimitArcSvg = document.querySelector('.char-limit-arc');
-      const charLimitArc = document.querySelector('.char-limit-arc .arc-value');
       if (charLimitArc && charLimitArcSvg) {
         if (val.length > 0) {
           charLimitArcSvg.style.opacity = '1';
