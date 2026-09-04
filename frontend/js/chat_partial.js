@@ -1562,10 +1562,10 @@ function renderSuggestionChips() {
   // All models share the same four starting points, matching the four-card
   // grid the empty state is designed around.
   chips = [
-    { icon: 'web', title: 'Create Landing Page', description: 'Polished and responsive.', prompt: 'Create a modern, responsive SaaS landing page with HTML, CSS and JavaScript', color: '#7c5cff' },
-    { icon: 'code_blocks', title: 'Build React Component', description: 'Clean, reusable and typed.', prompt: 'Build a reusable React component with props, TypeScript types and an accessible API', color: '#8f7bff' },
-    { icon: 'picture_as_pdf', title: 'Summarize PDF', description: 'Key points, fast.', prompt: 'Summarize this document into key takeaways, decisions and action items', color: '#a479ff' },
-    { icon: 'design_services', title: 'Generate UI Design', description: 'Layout, spacing and colour.', prompt: 'Generate a premium dark-mode dashboard UI design with layout, spacing and colour tokens', color: '#b87dff' }
+    { icon: 'edit_document', title: 'Draft an Email', description: 'Professional and clear.', prompt: 'Draft a professional email to my team about the upcoming project launch.', color: '#7c5cff' },
+    { icon: 'lightbulb', title: 'Brainstorm Ideas', description: 'Creative and fresh.', prompt: 'Brainstorm 5 creative ideas for a new marketing campaign.', color: '#8f7bff' },
+    { icon: 'flight_takeoff', title: 'Plan a Trip', description: 'Itinerary and tips.', prompt: 'Plan a 3-day weekend trip itinerary to a relaxing destination.', color: '#a479ff' },
+    { icon: 'history_edu', title: 'Write a Story', description: 'Engaging and fun.', prompt: 'Write a short story about a time traveler who visits ancient Rome.', color: '#b87dff' }
   ];
   
   chips.forEach(chip => {
