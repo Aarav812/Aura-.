@@ -255,9 +255,8 @@ app.post("/api/chat", verifyFirebaseToken, rateLimit, async (req, res) => {
     // Aura Allrounder (Fast)
     targetModel = "nvidia/nemotron-3-super-120b-a12b";
     console.log(`[ALLROUNDER-FAST] Routing to ${targetModel}`);
-  } else if (targetModel === "stepfun-ai/step-3.5-flash") {
+  } else if (targetModel === "nvidia/nemotron-3.5-lightning-30b-a3b") {
     // Aura Bhai
-    targetModel = "nvidia/nemotron-3.5-lightning-30b-a3b";
     console.log(`[BHAI] Routing to ${targetModel}`);
   } else {
     // Unknown model name — fall back to Allrounder Deep Think
@@ -368,7 +367,7 @@ app.post("/api/chat", verifyFirebaseToken, rateLimit, async (req, res) => {
     let systemPromptText = persona || AURA_SYSTEM_PROMPT;
 
     // Aura Bhai uses its own casual, Hinglish "friend" personality prompt.
-    if (model === "stepfun-ai/step-3.5-flash") {
+    if (model === "nvidia/nemotron-3.5-lightning-30b-a3b") {
       systemPromptText = AURA_BHAI_SYSTEM_PROMPT;
     }
     
@@ -436,7 +435,7 @@ app.post("/api/chat", verifyFirebaseToken, rateLimit, async (req, res) => {
     }
 
     // Specialized Parameters for Aura Bhai
-    if (model === "stepfun-ai/step-3.5-flash") {
+    if (model === "nvidia/nemotron-3.5-lightning-30b-a3b") {
       params.top_p = 0.9;
     }
 
@@ -447,8 +446,7 @@ app.post("/api/chat", verifyFirebaseToken, rateLimit, async (req, res) => {
     res.on("error", () => {
       try { res.end(); } catch (_) { /* already closed */ }
     });
-
-    const hideReasoning = model === "stepfun-ai/step-3.5-flash";
+    const hideReasoning = false;
 
     // Buffer to handle <think>...</think> blocks that may span multiple chunks
     let thinkBuffer = "";
