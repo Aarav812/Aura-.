@@ -1,0 +1,18 @@
+## 2024-05-18 - Accessible Labels for Icon-Only Buttons and Inputs
+**Learning:** Icon-only buttons without text content and form inputs without proper `<label>` elements are inaccessible to screen reader users. Simply using `placeholder` on inputs or assuming icon meaning is visually obvious is not sufficient.
+**Action:** Always ensure icon-only buttons include `aria-label` and `title` attributes. Ensure all form inputs have associated `<label>` tags or `aria-label` attributes for screen readers.
+## 2024-05-18 - Missing ARIA Labels on Dynamically Created Icon Buttons
+**Learning:** Icon-only action buttons dynamically created via JS (e.g., in `frontend/js/chat.js` for the AI response action bar) often lack `aria-label` attributes, making them inaccessible to screen readers.
+**Action:** Always ensure that dynamically created DOM elements, especially icon-only buttons, have an `aria-label` attribute explicitly set (e.g., `button.setAttribute('aria-label', 'Description')`) alongside any `title` attribute.
+## 2024-05-18 - Missing ARIA Labels on History Search Input and Edit Message Textarea
+**Learning:** Some elements dynamically added or styled specifically (like `<textarea>` inside an edit mode for an individual message or `<input>` inside a `<label>` missing text) do not naturally contain enough contextual text for screen readers. In `chat.html`, `chat-tail.html` and `chat.js`, these inputs lacked accessibility labels.
+**Action:** When working on input and textareas, ensure they have associated `aria-label` attributes if there is no immediate text `<label>` explaining their function, making the UI accessible via keyboard navigation and screen readers.
+## 2024-08-29 - [Missing `alt` attributes on dynamically rendered chat images]
+**Learning:** Dynamically generating image tags using string interpolation makes it easy to accidentally omit accessibility attributes like `alt` text, leading to poor screen reader experiences for attached media.
+**Action:** When manually building HTML strings with template literals for image previews, always include an `alt` attribute (e.g., `alt="Attached image"` or passing a filename) to ensure accessibility.
+## 2024-09-02 - Listbox Role Accessibility Requirements
+**Learning:** Elements using `role="listbox"` require active management of the `aria-selected` state on their child `role="option"` elements. Relying solely on visual cues like `.active` classes or injected icons leaves screen reader users unaware of which option is currently selected.
+**Action:** Always ensure that custom dropdowns or selectors using `role="listbox"` explicitly toggle the `aria-selected="true"` or `aria-selected="false"` attributes on the `role="option"` elements when selection changes.
+## 2025-01-20 - Custom Tab Interfaces Accessibility
+**Learning:** Custom tab interfaces (like the Canvas Preview/Code tabs) created with `<div>` and `<button>` elements are not announced as tabs by screen readers unless explicitly marked up. Relying on `.active` classes leaves screen reader users without context of the tabbed structure.
+**Action:** Always implement the `tablist`, `tab`, and `tabpanel` roles for custom tabbed interfaces, and ensure `aria-selected` is dynamically toggled to reflect the active tab.
