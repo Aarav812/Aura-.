@@ -438,4 +438,79 @@ document.addEventListener('DOMContentLoaded', () => {
   animate();
 })();
 
+console.log("%cMade with ❤️ by Aarav", "color: #7c5cff; font-size: 24px; font-weight: bold; background: #0a0a0a; padding: 10px; border-radius: 5px; border: 1px solid #7c5cff;");
 console.log('Synapse AI Landing — Liquid Glass loaded.');
+
+// ── Easter Eggs ──
+
+// 1. Keyboard Sequence ("aarav")
+let secretBuffer = "";
+document.addEventListener("keydown", (e) => {
+  if (e.key.length === 1) {
+    secretBuffer += e.key.toLowerCase();
+    if (secretBuffer.length > 5) {
+      secretBuffer = secretBuffer.slice(-5);
+    }
+    if (secretBuffer === "aarav") {
+      secretBuffer = "";
+      
+      // Load canvas-confetti script and fire it
+      if (!window.confetti) {
+        const script = document.createElement("script");
+        script.src = "https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js";
+        script.onload = () => triggerConfetti();
+        document.body.appendChild(script);
+      } else {
+        triggerConfetti();
+      }
+      
+      function triggerConfetti() {
+        var duration = 3 * 1000;
+        var end = Date.now() + duration;
+
+        (function frame() {
+          confetti({
+            particleCount: 5,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0 },
+            colors: ['#7c5cff', '#5ea2ff', '#ffffff']
+          });
+          confetti({
+            particleCount: 5,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1 },
+            colors: ['#7c5cff', '#5ea2ff', '#ffffff']
+          });
+
+          if (Date.now() < end) {
+            requestAnimationFrame(frame);
+          }
+        }());
+      }
+    }
+  }
+});
+
+// 2. Secret Logo Click (5 times fast)
+let logoClickCount = 0;
+let logoClickTimer;
+document.querySelectorAll('.logo').forEach(logo => {
+  logo.addEventListener('click', (e) => {
+    logoClickCount++;
+    clearTimeout(logoClickTimer);
+    
+    // Reset count if they don't click again within 1.5 seconds
+    logoClickTimer = setTimeout(() => {
+      logoClickCount = 0;
+    }, 1500);
+    
+    if (logoClickCount === 5) {
+      e.preventDefault();
+      e.stopPropagation();
+      alert("✨ Developer Mode Unlocked: This masterpiece was made by Aarav! ✨");
+      logoClickCount = 0;
+    }
+  });
+});

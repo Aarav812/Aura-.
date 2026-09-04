@@ -257,12 +257,27 @@ app.post("/api/chat", verifyFirebaseToken, rateLimit, async (req, res) => {
     console.log(`[ALLROUNDER-FAST] Routing to ${targetModel}`);
   } else if (targetModel === "stepfun-ai/step-3.5-flash") {
     // Aura Bhai
-    targetModel = "nvidia/nemotron-3-super-120b-a12b";
+    targetModel = "nvidia/nemotron-3.5-lightning-30b-a3b";
     console.log(`[BHAI] Routing to ${targetModel}`);
   } else {
     // Unknown model name — fall back to Allrounder Deep Think
     targetModel = "meta/muse-glimmer-30b";
     console.log(`[FALLBACK] Unknown model, routing to ${targetModel}`);
+  }
+
+  // ── Easter Egg: Chatbot Override ──
+  const lcText = lastUserText.trim().toLowerCase();
+  if (lcText === "who made you?" || lcText === "who created you?" || lcText === "who made you" || lcText === "who created you" || lcText === "/creator") {
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
+    res.setHeader("X-Accel-Buffering", "no");
+    
+    const secretMessage = "I am Aura, and I was proudly created by the brilliant Aarav!";
+    res.write(`data: ${JSON.stringify({ content: secretMessage })}\n\n`);
+    res.write(`data: [DONE]\n\n`);
+    res.end();
+    return;
   }
 
   // 2. All requests go to the NVIDIA endpoint using a single API key.
