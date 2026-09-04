@@ -70,6 +70,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  max-width: calc(100vw - 2rem);
 }
 .synapse-toast.show {
   opacity: 1;
@@ -81,6 +82,23 @@
 .synapse-toast .toast-icon {
   font-size: 16px;
   flex-shrink: 0;
+}
+
+/* On mobile, center the toast at the bottom for thumb reach */
+@media (max-width: 640px) {
+  .synapse-toast {
+    top: auto;
+    bottom: max(calc(env(safe-area-inset-bottom, 0px) + 5.5rem), 5.5rem);
+    right: 50%;
+    transform: translateX(50%);
+    text-align: center;
+    white-space: normal;
+    max-width: calc(100vw - 2.5rem);
+    font-size: 0.8rem;
+  }
+  .synapse-toast.show {
+    transform: translateX(50%);
+  }
 }
 
 /* ── Message Timestamp ── */
@@ -166,6 +184,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
   padding: 1px;
   background: var(--liquid-edge);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
           mask-composite: exclude;
   pointer-events: none;
@@ -538,8 +557,21 @@ body, .bg-background {
 }
 
 /* ── Markdown Table Styles ── */
+/* Wrap tables in a scrollable container on mobile */
+.answer-content table-container,
+.answer-content .table-wrapper {
+  overflow-x: auto;
+  max-width: 100%;
+  margin-bottom: 1rem;
+  border-radius: 12px;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Tables should always be at least their min-content width */
 .answer-content table {
   width: 100%;
+  min-width: max-content;
   border-collapse: separate;
   border-spacing: 0;
   margin: 1rem 0;
@@ -671,6 +703,7 @@ body, .bg-background {
   padding: 1px;
   background: var(--liquid-edge);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
           mask-composite: exclude;
   pointer-events: none;
@@ -920,7 +953,7 @@ body {
 /* ── Responsive ── */
 @media (max-width: 640px) {
   .auth-card {
-    padding: 1.5rem;
+    padding: 1.25rem;
     margin: 0.75rem;
     border-radius: 20px;
   }
@@ -939,7 +972,7 @@ body {
   }
 
   .ai-bubble, .user-bubble {
-    padding: 0.65rem 0.8rem;
+    padding: 0.65rem 0.85rem;
     font-size: 0.95rem;
     line-height: 1.65;
     overflow-wrap: break-word;
@@ -951,12 +984,16 @@ body {
   .ai-bubble pre {
     padding: 0.6rem;
     font-size: 0.78rem;
-    max-width: calc(100vw - 5rem);
+    /* Allow horizontal scroll on code blocks */
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    /* Never wider than screen minus padding */
+    max-width: calc(100vw - 3.5rem);
   }
 
   .ai-bubble .katex-display {
     overflow-x: auto;
-    max-width: calc(100vw - 5rem);
+    max-width: calc(100vw - 3.5rem);
     -webkit-overflow-scrolling: touch;
   }
 
@@ -1000,6 +1037,16 @@ body {
     /* Rounded top corners only — bottom is flush with screen edge */
     border-bottom-left-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
+  }
+
+  /* ── AI bubble tables — horizontal scroll ── */
+  .ai-bubble table {
+    min-width: max-content;
+    font-size: 0.78rem;
+  }
+  .ai-bubble th, .ai-bubble td {
+    padding: 0.45rem 0.6rem;
+    white-space: nowrap;
   }
 }
 
@@ -1380,6 +1427,7 @@ html:not(.dark) .ai-bubble a:hover {
   padding: 1px;
   background: var(--liquid-edge);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
           mask-composite: exclude;
   pointer-events: none;
