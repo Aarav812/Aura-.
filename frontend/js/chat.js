@@ -734,7 +734,7 @@ function saveSession() {
           ...msg,
           content: msg.content.map(block => {
             if (block.type === 'image_url' && block.image_url?.url?.startsWith('data:')) {
-              const imgId = `img_${currentChatId}_${Math.random().toString(36).substr(2, 9)}`;
+              const imgId = `img_${currentChatId}_${generateId()}`;
               // Fire-and-forget: swallow rejections (IndexedDB unavailable in
               // some private modes) so they never surface as unhandled.
               saveToDB("attachments", imgId, block.image_url.url).catch((e) => console.warn("Attachment persist failed:", e));
