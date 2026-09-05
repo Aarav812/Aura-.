@@ -1,0 +1,3 @@
+## 2024-03-24 - Cache Math/KaTeX Rendering during Streaming
+**Learning:** During AI response streaming, the entire accumulated text is re-parsed and re-rendered via `renderMarkdown` on every chunk. If the response contains complex LaTeX math blocks, `katex.renderToString` is called repeatedly for the exact same math expressions hundreds of times as the stream progresses, causing severe main-thread blocking and layout thrashing (O(N^2) work over the stream).
+**Action:** Implement a simple LRU or Map cache for `katex.renderToString` results, keyed by the math string and display mode, so that already-rendered blocks are just O(1) lookups on subsequent chunks.
