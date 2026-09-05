@@ -24,7 +24,12 @@ function escapeHtml(text) {
  * Generates a random alphanumeric ID.
  */
 function generateId() {
-  return Date.now().toString(36) + Math.random().toString(36).substr(2);
+  if (window.crypto && window.crypto.randomUUID) {
+    return window.crypto.randomUUID().replace(/-/g, "");
+  }
+  const randomBytes = new Uint32Array(1);
+  window.crypto.getRandomValues(randomBytes);
+  return Date.now().toString(36) + randomBytes[0].toString(36);
 }
 
 // ⚡ Bolt: Cache Intl.DateTimeFormat
