@@ -468,13 +468,13 @@ function renderAttachments() {
     if (attachment.isImage) {
       previewHtml = `<img src="${attachment.data}" alt="${escapeHtml(attachment.filename || "attachment")}" />`;
     } else {
-      previewHtml = `<div class="attachment-chip-file"><span class="material-symbols-outlined">description</span></div>`;
+      previewHtml = `<div class="attachment-chip-file"><span aria-hidden="true" class="material-symbols-outlined">description</span></div>`;
     }
 
     item.innerHTML = `
       ${previewHtml}
       <button type="button" onclick="removeAttachment(${index})" class="attachment-chip-remove" title="Remove attachment" aria-label="Remove attachment">
-        <span class="material-symbols-outlined" style="font-size:14px;">close</span>
+        <span aria-hidden="true" class="material-symbols-outlined" style="font-size:14px;">close</span>
       </button>
     `;
     attachmentPreviewContainer.appendChild(item);
@@ -534,7 +534,7 @@ function openProfileMenu() {
       </div>
       <div class="profile-menu-divider"></div>
       <button id="profile-menu-logout" class="sidebar-action" type="button" role="menuitem">
-        <span class="material-symbols-outlined">logout</span>
+        <span aria-hidden="true" class="material-symbols-outlined">logout</span>
         <span>Log out</span>
       </button>
     `;
@@ -1254,7 +1254,7 @@ function renderSidebarHistory(index) {
       button.title = chat.title;
       const timeLabel = chat.updatedAt ? formatRelativeTime(chat.updatedAt) : '';
       button.innerHTML =
-        `<span class="material-symbols-outlined history-icon">chat_bubble</span>` +
+        `<span aria-hidden="true" class="material-symbols-outlined history-icon">chat_bubble</span>` +
         `<span class="history-title">${escapeHtml(chat.title)}</span>` +
         `<span class="history-time">${escapeHtml(timeLabel)}</span>`;
       button.addEventListener('click', () => loadSession(chat.id));
@@ -1267,7 +1267,7 @@ function renderSidebarHistory(index) {
       del.className = 'sidebar-recent-delete';
       del.title = 'Delete chat';
       del.setAttribute('aria-label', `Delete chat: ${chat.title}`);
-      del.innerHTML = `<span class="material-symbols-outlined">delete</span>`;
+      del.innerHTML = `<span aria-hidden="true" class="material-symbols-outlined">delete</span>`;
       del.addEventListener('click', (e) => {
         e.stopPropagation();
         // Route through the custom in-app confirmation modal instead of
@@ -1345,7 +1345,7 @@ function loadHistoryIndex(searchQuery = '') {
           <p class="history-modal-item-date">${date}</p>
         </div>
         <button type="button" onclick="event.stopPropagation(); confirmDeleteSession('${chat.id}')" class="history-modal-item-delete" aria-label="Delete chat">
-          <span class="material-symbols-outlined" style="font-size: 18px;">delete</span>
+          <span aria-hidden="true" class="material-symbols-outlined" style="font-size: 18px;">delete</span>
         </button>
       `;
       fragment.appendChild(item);
@@ -1406,9 +1406,9 @@ function sendMessage() {
       if (file.isImage) {
         attachmentPreviews.push(`<img src="${file.data}" alt="${escapeHtml(file.filename)}" style="max-height: 200px; border-radius: 8px; margin-top: 8px; border: 1px solid rgba(255,255,255,0.1);"/>`);
       } else if (file.mimeType.startsWith("audio/")) {
-        attachmentPreviews.push(`<div style="display:flex;align-items:center;gap:8px;background:rgba(94,162,255,0.1);padding:8px;border-radius:8px;margin-top:8px;"><span class="material-symbols-outlined" style="color:#5ea2ff;">audiotrack</span><span style="color:#f5f5f7;font-size:0.8rem;">${escapeHtml(file.filename)}</span></div>`);
+        attachmentPreviews.push(`<div style="display:flex;align-items:center;gap:8px;background:rgba(94,162,255,0.1);padding:8px;border-radius:8px;margin-top:8px;"><span aria-hidden="true" class="material-symbols-outlined" style="color:#5ea2ff;">audiotrack</span><span style="color:#f5f5f7;font-size:0.8rem;">${escapeHtml(file.filename)}</span></div>`);
       } else if (file.mimeType.startsWith("video/")) {
-        attachmentPreviews.push(`<div style="display:flex;align-items:center;gap:8px;background:rgba(220,184,255,0.1);padding:8px;border-radius:8px;margin-top:8px;"><span class="material-symbols-outlined" style="color:#dcb8ff;">movie</span><span style="color:#f5f5f7;font-size:0.8rem;">${escapeHtml(file.filename)}</span></div>`);
+        attachmentPreviews.push(`<div style="display:flex;align-items:center;gap:8px;background:rgba(220,184,255,0.1);padding:8px;border-radius:8px;margin-top:8px;"><span aria-hidden="true" class="material-symbols-outlined" style="color:#dcb8ff;">movie</span><span style="color:#f5f5f7;font-size:0.8rem;">${escapeHtml(file.filename)}</span></div>`);
       } else {
         attachmentPreviews.push(`<span style="color:#5ea2ff;font-size:0.8rem; display: block;">📎 Attached: ${escapeHtml(file.filename)}</span>`);
       }
@@ -1560,7 +1560,7 @@ function renderSuggestionChips() {
     btn.dataset.prompt = chip.prompt;
     btn.style.setProperty('--chip-color', chip.color);
     btn.innerHTML = `
-      <span class="suggestion-card-icon"><span class="material-symbols-outlined">${escapeHtml(chip.icon)}</span></span>
+      <span class="suggestion-card-icon"><span aria-hidden="true" class="material-symbols-outlined">${escapeHtml(chip.icon)}</span></span>
       <span class="suggestion-card-text">
         <span class="suggestion-card-title">${escapeHtml(chip.title)}</span>
         <span class="suggestion-card-desc">${escapeHtml(chip.description)}</span>
@@ -1850,7 +1850,7 @@ async function getAuraResponse(multimodalState = {}) {
             if (!reasoningEl) {
               reasoningEl = document.createElement("details");
               reasoningEl.className = "thinking-block";
-              reasoningEl.innerHTML = `<summary><span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;margin-right:4px;">psychology</span>Thinking...<span class="deep-think-timer" style="margin-left:auto;font-size:0.7rem;color:rgba(220,184,255,0.5);font-weight:500;"></span></summary><div class="deep-think-progress"></div><div class="thinking-content"></div>`;
+              reasoningEl.innerHTML = `<summary><span aria-hidden="true" class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;margin-right:4px;">psychology</span>Thinking...<span class="deep-think-timer" style="margin-left:auto;font-size:0.7rem;color:rgba(220,184,255,0.5);font-weight:500;"></span></summary><div class="deep-think-progress"></div><div class="thinking-content"></div>`;
               reasoningEl.open = true;
               bubbleEl.prepend(reasoningEl);
               // Start a timer to show elapsed time
@@ -1879,7 +1879,7 @@ async function getAuraResponse(multimodalState = {}) {
                 // Stop the timer
                 if (reasoningEl._timer) { clearInterval(reasoningEl._timer); reasoningEl._timer = null; }
                 const elapsed = Math.round((Date.now() - reasoningEl._startTime) / 1000);
-                summary.innerHTML = `<span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;margin-right:4px;">psychology</span>Thought for ${elapsed}s`;
+                summary.innerHTML = `<span aria-hidden="true" class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;margin-right:4px;">psychology</span>Thought for ${elapsed}s`;
               }
             }
           }
@@ -1924,7 +1924,7 @@ async function getAuraResponse(multimodalState = {}) {
         const summary = reasoningEl.querySelector("summary");
         if (summary) {
           const elapsed = Math.round((Date.now() - (reasoningEl._startTime || Date.now())) / 1000);
-          summary.innerHTML = `<span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;margin-right:4px;">psychology</span>Reasoning (${elapsed}s)`;
+          summary.innerHTML = `<span aria-hidden="true" class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;margin-right:4px;">psychology</span>Reasoning (${elapsed}s)`;
         }
       }
       const answerEl = bubbleEl ? bubbleEl.querySelector(".answer-content") : null;
@@ -2005,13 +2005,13 @@ function appendActionBar(rowEl, content) {
   copyBtn.className = "action-btn";
   copyBtn.title = "Copy response";
   copyBtn.setAttribute("aria-label", "Copy response");
-  copyBtn.innerHTML = '<span class="material-symbols-outlined">content_copy</span>';
+  copyBtn.innerHTML = '<span aria-hidden="true" class="material-symbols-outlined">content_copy</span>';
   copyBtn.onclick = () => {
     navigator.clipboard.writeText(content).then(() => {
-      copyBtn.innerHTML = '<span class="material-symbols-outlined">check</span>';
+      copyBtn.innerHTML = '<span aria-hidden="true" class="material-symbols-outlined">check</span>';
       copyBtn.style.color = "#4ade80";
       setTimeout(() => {
-        copyBtn.innerHTML = '<span class="material-symbols-outlined">content_copy</span>';
+        copyBtn.innerHTML = '<span aria-hidden="true" class="material-symbols-outlined">content_copy</span>';
         copyBtn.style.color = "";
       }, 2000);
     });
@@ -2022,7 +2022,7 @@ function appendActionBar(rowEl, content) {
   thumbUpBtn.className = "action-btn";
   thumbUpBtn.title = "Good response";
   thumbUpBtn.setAttribute("aria-label", "Good response");
-  thumbUpBtn.innerHTML = '<span class="material-symbols-outlined">thumb_up</span>';
+  thumbUpBtn.innerHTML = '<span aria-hidden="true" class="material-symbols-outlined">thumb_up</span>';
   thumbUpBtn.onclick = () => {
     thumbUpBtn.style.color = "#5ea2ff";
     thumbDownBtn.style.color = "";
@@ -2035,7 +2035,7 @@ function appendActionBar(rowEl, content) {
   thumbDownBtn.className = "action-btn";
   thumbDownBtn.title = "Bad response";
   thumbDownBtn.setAttribute("aria-label", "Bad response");
-  thumbDownBtn.innerHTML = '<span class="material-symbols-outlined">thumb_down</span>';
+  thumbDownBtn.innerHTML = '<span aria-hidden="true" class="material-symbols-outlined">thumb_down</span>';
   thumbDownBtn.onclick = () => {
     thumbDownBtn.style.color = "#ffb4ab";
     thumbUpBtn.style.color = "";
@@ -2048,7 +2048,7 @@ function appendActionBar(rowEl, content) {
   retryBtn.className = "action-btn";
   retryBtn.title = "Retry response";
   retryBtn.setAttribute("aria-label", "Retry response");
-  retryBtn.innerHTML = '<span class="material-symbols-outlined">refresh</span>';
+  retryBtn.innerHTML = '<span aria-hidden="true" class="material-symbols-outlined">refresh</span>';
   retryBtn.onclick = () => {
     if (isStreaming) return;
     // Pop the last assistant message from history
@@ -2066,7 +2066,7 @@ function appendActionBar(rowEl, content) {
   exportBtn.className = "action-btn";
   exportBtn.title = "Export as PDF";
   exportBtn.setAttribute("aria-label", "Export as PDF");
-  exportBtn.innerHTML = '<span class="material-symbols-outlined">picture_as_pdf</span>';
+  exportBtn.innerHTML = '<span aria-hidden="true" class="material-symbols-outlined">picture_as_pdf</span>';
   exportBtn.onclick = () => exportCurrentChat();
 
   bar.appendChild(copyBtn);
@@ -2144,7 +2144,7 @@ function appendMessage(role, content, explicitIndex = -1, isRawHtmlForUser = fal
     // Add Edit Button
     const editBtn = document.createElement("button");
     editBtn.className = "edit-message-btn";
-    editBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px;">edit</span>';
+    editBtn.innerHTML = '<span aria-hidden="true" class="material-symbols-outlined" style="font-size:18px;">edit</span>';
     editBtn.title = "Edit message";
     editBtn.setAttribute("aria-label", "Edit message");
     editBtn.onclick = () => openEditMode(row, index);
@@ -2275,10 +2275,10 @@ function copyCode(btn) {
   const text = codeEl.textContent;
   navigator.clipboard.writeText(text).then(() => {
     btn.classList.add("copied");
-    btn.innerHTML = `<span class="material-symbols-outlined" style="font-size:14px;">check</span> Copied!`;
+    btn.innerHTML = `<span aria-hidden="true" class="material-symbols-outlined" style="font-size:14px;">check</span> Copied!`;
     setTimeout(() => {
       btn.classList.remove("copied");
-      btn.innerHTML = `<span class="material-symbols-outlined" style="font-size:14px;">content_copy</span> Copy`;
+      btn.innerHTML = `<span aria-hidden="true" class="material-symbols-outlined" style="font-size:14px;">content_copy</span> Copy`;
     }, 2000);
   }).catch(() => {
     // Fallback for older browsers
@@ -2290,10 +2290,10 @@ function copyCode(btn) {
     document.execCommand("copy");
     document.body.removeChild(textarea);
     btn.classList.add("copied");
-    btn.innerHTML = `<span class="material-symbols-outlined" style="font-size:14px;">check</span> Copied!`;
+    btn.innerHTML = `<span aria-hidden="true" class="material-symbols-outlined" style="font-size:14px;">check</span> Copied!`;
     setTimeout(() => {
       btn.classList.remove("copied");
-      btn.innerHTML = `<span class="material-symbols-outlined" style="font-size:14px;">content_copy</span> Copy`;
+      btn.innerHTML = `<span aria-hidden="true" class="material-symbols-outlined" style="font-size:14px;">content_copy</span> Copy`;
     }, 2000);
   });
 }
@@ -2790,10 +2790,10 @@ function showModelWarning(originalModel) {
   // bound listeners closing over the raw value instead of interpolating it
   // into an inline onclick string (which could break out of the quotes).
   banner.innerHTML = `
-    <span class="material-symbols-outlined">info</span>
+    <span aria-hidden="true" class="material-symbols-outlined">info</span>
     <span>This chat was with <strong>${escapeHtml(originalModel)}</strong></span>
     <button type="button" class="model-warning-switch">Switch back</button>
-    <button type="button" class="model-warning-dismiss" aria-label="Dismiss warning" style="background:none;border:none;color:rgba(255,200,100,0.5);padding:2px;cursor:pointer;"><span class="material-symbols-outlined" style="font-size:16px;">close</span></button>
+    <button type="button" class="model-warning-dismiss" aria-label="Dismiss warning" style="background:none;border:none;color:rgba(255,200,100,0.5);padding:2px;cursor:pointer;"><span aria-hidden="true" class="material-symbols-outlined" style="font-size:16px;">close</span></button>
   `;
   const switchBtn = banner.querySelector('.model-warning-switch');
   if (switchBtn) switchBtn.addEventListener('click', () => {
@@ -2831,14 +2831,14 @@ function showPWAInstallBanner() {
   banner.className = 'pwa-install-banner';
   banner.innerHTML = `
     <div class="pwa-icon">
-      <span class="material-symbols-outlined" style="color:#fff;font-size:18px;font-variation-settings:'FILL' 1;">install_mobile</span>
+      <span aria-hidden="true" class="material-symbols-outlined" style="color:#fff;font-size:18px;font-variation-settings:'FILL' 1;">install_mobile</span>
     </div>
     <div class="pwa-text">
       <div class="pwa-title">Install Synapse AI</div>
       <div class="pwa-desc">Add to home screen for quick access</div>
     </div>
     <button class="pwa-close" aria-label="Close install prompt" onclick="event.stopPropagation(); this.closest('.pwa-install-banner').remove(); localStorage.setItem('pwa_dismissed','1');">
-      <span class="material-symbols-outlined" style="font-size:16px;">close</span>
+      <span aria-hidden="true" class="material-symbols-outlined" style="font-size:16px;">close</span>
     </button>
   `;
   banner.addEventListener('click', async () => {
@@ -2949,11 +2949,11 @@ function showToast(message, type = 'default', duration = 2500) {
   // Build toast content with icon
   let iconHtml = '';
   if (type === 'success') {
-    iconHtml = '<span class="material-symbols-outlined toast-icon" style="font-variation-settings:\'FILL\' 1;">check_circle</span>';
+    iconHtml = '<span aria-hidden="true" class="material-symbols-outlined toast-icon" style="font-variation-settings:\'FILL\' 1;">check_circle</span>';
   } else if (type === 'error') {
-    iconHtml = '<span class="material-symbols-outlined toast-icon" style="font-variation-settings:\'FILL\' 1;">error</span>';
+    iconHtml = '<span aria-hidden="true" class="material-symbols-outlined toast-icon" style="font-variation-settings:\'FILL\' 1;">error</span>';
   } else if (type === 'info') {
-    iconHtml = '<span class="material-symbols-outlined toast-icon" style="font-variation-settings:\'FILL\' 1;">info</span>';
+    iconHtml = '<span aria-hidden="true" class="material-symbols-outlined toast-icon" style="font-variation-settings:\'FILL\' 1;">info</span>';
   }
 
   // `message` can carry untrusted text (model names from localStorage, upstream
