@@ -262,12 +262,33 @@ function renderMarkdown(text, isStreaming = false) {
     return `<div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-label">${langLabel}</span><div style="display:flex;"><button class="copy-code-btn" onclick="copyCode(this)" aria-label="Copy code"><span class="material-symbols-outlined" style="font-size:14px;">content_copy</span> Copy</button></div></div><pre><code class="hljs language-${block.lang}">${escapedCodeForDisplay}</code></pre></div>`;
   });
 
+  // ⚡ Bolt: Cache KaTeX rendering during streaming
+  // Impact: Prevents O(N^2) rendering overhead during AI response streaming.
+  // Without this, the entire accumulated text is re-parsed and every math block
+  // is re-rendered via katex on every chunk, causing severe main thread blocking.
+  if (typeof window.cachedKaTeX === "undefined") {
+    window.cachedKaTeX = new Map();
+  }
+  const maxKaTeXCacheSize = 1000;
+
   html = html.replace(/%%MATH_BLOCK_(\d+)%%/g, (_, idx) => {
     const block = mathBlocks[parseInt(idx)];
     if (!block) return "";
     try {
       if (typeof katex !== "undefined") {
-        return katex.renderToString(block.math, { displayMode: block.display, throwOnError: false, output: "html" });
+        const cacheKey = block.math + (block.display ? "_d" : "_i");
+        if (window.cachedKaTeX.has(cacheKey)) {
+          return window.cachedKaTeX.get(cacheKey);
+        }
+
+        const rendered = katex.renderToString(block.math, { displayMode: block.display, throwOnError: false, output: "html" });
+
+        // Prevent unbounded memory growth
+        if (window.cachedKaTeX.size >= maxKaTeXCacheSize) {
+          window.cachedKaTeX.delete(window.cachedKaTeX.keys().next().value);
+        }
+        window.cachedKaTeX.set(cacheKey, rendered);
+        return rendered;
       }
       return block.display ? `<div class="math-fallback">${escapeHtml(block.math)}</div>` : `<span class="math-fallback">${escapeHtml(block.math)}</span>`;
     } catch (e) {
